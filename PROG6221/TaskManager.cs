@@ -19,10 +19,15 @@ namespace PROG6221
             if (task != null) task.IsCompleted = true;
         }
 
-        public void DeleteTask(string title)
+        public bool DeleteTask(string title)
         {
-            var task = _tasks.FirstOrDefault(t => t.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
-            if (task != null) _tasks.Remove(task);
+            var task = _tasks.FirstOrDefault(t => t.Title.Equals(title.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (task != null)
+            {
+                _tasks.Remove(task);
+                return true;
+            }
+            return false;
         }
 
         public string ListTasks()

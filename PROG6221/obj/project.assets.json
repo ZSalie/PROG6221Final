@@ -113,11 +113,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lab_services_student\\source\\repos\\PROG6221\\PROG6221\\PROG6221.csproj",
+      "projectUniqueName": "C:\\Users\\lab_services_student\\source\\repos\\PROG6221Final\\PROG6221\\PROG6221.csproj",
       "projectName": "PROG6221",
-      "projectPath": "C:\\Users\\lab_services_student\\source\\repos\\PROG6221\\PROG6221\\PROG6221.csproj",
+      "projectPath": "C:\\Users\\lab_services_student\\source\\repos\\PROG6221Final\\PROG6221\\PROG6221.csproj",
       "packagesPath": "C:\\Users\\lab_services_student\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\lab_services_student\\source\\repos\\PROG6221\\PROG6221\\obj\\",
+      "outputPath": "C:\\Users\\lab_services_student\\source\\repos\\PROG6221Final\\PROG6221\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

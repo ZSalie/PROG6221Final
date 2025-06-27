@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "LIuKh2pkRR8=",
+  "dgSpecHash": "oL2+Pz+d0TM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\lab_services_student\\source\\repos\\PROG6221\\PROG6221\\PROG6221.csproj",
+  "projectFilePath": "C:\\Users\\lab_services_student\\source\\repos\\PROG6221Final\\PROG6221\\PROG6221.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lab_services_student\\.nuget\\packages\\system.speech\\9.0.6\\system.speech.9.0.6.nupkg.sha512",
     "C:\\Users\\lab_services_student\\.nuget\\packages\\system.windows.extensions\\9.0.6\\system.windows.extensions.9.0.6.nupkg.sha512"

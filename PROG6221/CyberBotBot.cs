@@ -18,10 +18,8 @@ namespace PROG6221
         private readonly List<Reminder> _reminders = new();
         private string? _pendingReminderMessage;
 
-        // Activity log (last 10 actions)
         private readonly List<string> _activityLog = new();
 
-        // All 10 quiz questions
         private readonly List<QuizQuestion> _cybersecurityQuestions = new()
         {
             new QuizQuestion("What should you do if you receive an email asking for your password?",
@@ -86,26 +84,22 @@ namespace PROG6221
 
         public string Respond(string input, ResponseManager responseManager)
         {
-            // Normalize input (remove trailing punctuation/spaces)
             string normalized = input.Trim().TrimEnd('.', '!', '?');
 
-            // 1) Show activity log
             if (normalized.Equals("show activity log", StringComparison.OrdinalIgnoreCase) ||
                 normalized.Equals("what have you done for me", StringComparison.OrdinalIgnoreCase))
             {
                 if (_activityLog.Count == 0)
                     return "No recent activity to show.";
-                return "Here’s a summary of recent actions:\n- " + string.Join("\n- ", _activityLog);
+                return "Here's a summary of recent actions:\n- " + string.Join("\n- ", _activityLog);
             }
 
-            // 2) Start quiz
             if (normalized.Equals("start quiz", StringComparison.OrdinalIgnoreCase))
             {
                 LogAction("Quiz started.");
                 return StartQuiz();
             }
 
-            // 3) Quiz mode
             if (_inQuizMode)
             {
                 var resp = HandleQuizResponse(input);
@@ -114,7 +108,6 @@ namespace PROG6221
                 return resp;
             }
 
-            // 4) FOLLOW-UP PROMPT HANDLING
             if (_waitingForFollowUp)
             {
                 _waitingForFollowUp = false;
@@ -123,7 +116,6 @@ namespace PROG6221
                 return "Alright! If you have any other questions, feel free to ask.";
             }
 
-            // 5) Reminder input
             if (_waitingForReminder)
             {
                 int days = ExtractNumber(input);
@@ -135,10 +127,9 @@ namespace PROG6221
                 _waitingForReminder = false;
                 var msg = _pendingReminderMessage!;
                 _pendingReminderMessage = null;
-                return $"Okay! I’ll remind you in {days} day(s) to: {msg}";
+                return $"Okay! I'll remind you in {days} day(s) to: {msg}";
             }
 
-            // 6) Set reminder
             if (input.StartsWith("remind me to", StringComparison.OrdinalIgnoreCase))
             {
                 _pendingReminderMessage = input["remind me to".Length..].Trim();
@@ -146,7 +137,6 @@ namespace PROG6221
                 return $"When should I remind you to: \"{_pendingReminderMessage}\"? (e.g. 'in 3 days')";
             }
 
-            // 7) Add task
             if (input.StartsWith("add task", StringComparison.OrdinalIgnoreCase))
             {
                 var title = input["add task".Length..].Trim();
@@ -159,11 +149,9 @@ namespace PROG6221
                 return $"Task added: \"{title}\". When would you like to be reminded? (Enter number of days)";
             }
 
-            // 8) List tasks
             if (normalized.Equals("list tasks", StringComparison.OrdinalIgnoreCase))
                 return _taskManager.ListTasks();
 
-            // 9) Complete task
             if (input.StartsWith("complete task", StringComparison.OrdinalIgnoreCase))
             {
                 var t = input["complete task".Length..].Trim();
@@ -172,16 +160,17 @@ namespace PROG6221
                 return $"Marked \"{t}\" as completed.";
             }
 
-            // 10) Delete task
             if (input.StartsWith("delete task", StringComparison.OrdinalIgnoreCase))
             {
                 var t = input["delete task".Length..].Trim();
-                _taskManager.DeleteTask(t);
-                LogAction($"Task deleted: '{t}'");
-                return $"Deleted task \"{t}\".";
+                if (_taskManager.DeleteTask(t))
+                {
+                    LogAction($"Task deleted: '{t}'");
+                    return $"Successfully deleted task \"{t}\".";
+                }
+                return $"Task \"{t}\" not found.";
             }
 
-            // 11) Show reminders
             if (normalized.Equals("show reminders", StringComparison.OrdinalIgnoreCase))
             {
                 var list = _reminders
@@ -192,7 +181,6 @@ namespace PROG6221
                     : "Here are your reminders:\n" + string.Join("\n", list);
             }
 
-            // 12) Concern + topic detection
             bool isConcern = normalized.IndexOf("worried", StringComparison.OrdinalIgnoreCase) >= 0
                           || normalized.IndexOf("anxious", StringComparison.OrdinalIgnoreCase) >= 0
                           || normalized.IndexOf("concerned", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -200,17 +188,15 @@ namespace PROG6221
             if (isConcern && detectedTopic != null)
             {
                 LogAction($"Concern detected for topic '{detectedTopic}'.");
-                return $"😟 I understand you're concerned about {detectedTopic}. Here’s a tip:\n" +
+                return $"😟 I understand you're concerned about {detectedTopic}. Here's a tip:\n" +
                        $"{responseManager.GetResponse(detectedTopic)}\n\n" +
                        $"Would you like more details about {detectedTopic}? (yes/no)";
             }
 
-            // 13) General sentiment
             var sentiment = AnalyzeSentiment(input);
             if (sentiment != null)
                 return sentiment;
 
-            // 14) NLP topic detection
             if (detectedTopic != null)
             {
                 _lastTopic = detectedTopic;
@@ -222,7 +208,6 @@ namespace PROG6221
                 return $"{responseManager.GetResponse(detectedTopic)}\nWould you like more details about {detectedTopic}? (yes/no)";
             }
 
-            // 15) Default error
             return responseManager.GetRandomErrorResponse();
         }
 
@@ -303,6 +288,22 @@ namespace PROG6221
         {
             public string Message { get; set; } = "";
             public DateTime ReminderTime { get; set; }
+        }
+
+        public class QuizQuestion
+        {
+            public string Question { get; }
+            public List<string> Options { get; }
+            public int CorrectAnswerIndex { get; }
+            public string Explanation { get; }
+
+            public QuizQuestion(string question, List<string> options, int correctAnswerIndex, string explanation)
+            {
+                Question = question;
+                Options = options;
+                CorrectAnswerIndex = correctAnswerIndex;
+                Explanation = explanation;
+            }
         }
     }
 }
